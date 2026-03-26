@@ -6,7 +6,7 @@ const initialPlayers = [
   { id: 1, name: 'Victor Borges Siqueira Campos', nick: 'obanai iguro#3994', phone: '13 92001-3463', main: 'TOP', sec: 'MID', usage: 'Main TOP' },
   { id: 2, name: 'Victor dos Santos Almeida', nick: 'SrCh4ve#BR1', phone: '11 953122652', main: 'TOP', sec: 'ADC', usage: 'Main TOP / Flex ADC' },
   { id: 3, name: 'Guilherme Gonzalez Câmara', nick: 'gzalez#zzz', phone: '13982260198', main: 'JG', sec: 'TOP', usage: 'Main JG / Flex TOP' },
-  { id: 4, name: 'Caué Paiva Lucena', nick: 'Lauê Cuccena#br1', phone: '13981694051', main: 'JG', sec: 'SUP', usage: 'Main JG' },
+  { id: 4, name: 'Caue Paiva Lucena', nick: 'Lauê Cuccena#br1', phone: '13981694051', main: 'JG', sec: 'SUP', usage: 'Main JG' },
   { id: 5, name: 'Rafael Henriques', nick: 'akubO#BR1', phone: '13 99706-8797', main: 'JG', sec: 'ADC', usage: 'Main JG / Flex ADC' },
   { id: 6, name: 'Joao Pedro Felippi da Costa', nick: 'Kavazaa#Furia', phone: '13991196998', main: 'MID', sec: 'ADC', usage: 'Autofill ADC / Flex MID' },
   { id: 7, name: 'Renan Rodrigo Campana dos Santos', nick: 'alexa ligar aura #rena', phone: '13974117750', main: 'MID', sec: '-', usage: 'Main MID' },
