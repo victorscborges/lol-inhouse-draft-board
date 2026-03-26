@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Users, AlertTriangle, CheckCircle, ArrowRightLeft, Copy, RefreshCw, Info, Trophy, Swords, Crown, LayoutDashboard, X, GripVertical } from 'lucide-react';
+import { Users, AlertTriangle, CheckCircle, ArrowRightLeft, Copy, RefreshCw, Info, Trophy, Swords, Crown, LayoutDashboard, X, GripVertical, Search, ChevronDown, ChevronUp } from 'lucide-react';
 
 // Dados dos jogadores baseados na lista fornecida
 const initialPlayers = [
@@ -58,6 +58,12 @@ export default function App() {
     'Time 4': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Reservas': { RES1: null, RES2: null }
   });
+  // ===== UI do Pool (busca/filtro/colapsar) =====
+  const [poolQuery, setPoolQuery] = useState('');
+  const [poolRole, setPoolRole] = useState('ALL');
+  const [expandedRoles, setExpandedRoles] = useState(() =>
+    Object.fromEntries(ROLES.map(r => [r, true]))
+  );
 
   // Calculate assigned player IDs
   const assignedIds = useMemo(() => {
@@ -73,6 +79,19 @@ export default function App() {
   const unassignedPlayers = useMemo(() => {
     return initialPlayers.filter(p => !assignedIds.includes(p.id));
   }, [assignedIds]);
+
+
+  const filteredUnassignedPlayers = useMemo(() => {
+    const q = poolQuery.trim().toLowerCase();
+    return unassignedPlayers.filter(p => {
+      const matchesQuery = !q ||
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.nick && p.nick.toLowerCase().includes(q));
+
+      const matchesRole = poolRole === 'ALL' || p.main === poolRole || p.sec === poolRole;
+      return matchesQuery && matchesRole;
+    });
+  }, [unassignedPlayers, poolQuery, poolRole]);
 
   // Função para processar o Drag and Drop
   const handleAssignPlayer = (targetTeam, targetRole, playerIdStr) => {
@@ -424,78 +443,142 @@ export default function App() {
 
           {/* Right Column - Available Pool */}
           <div className="bg-[#150A21] rounded-xl border border-[#201030] flex flex-col max-h-[calc(100vh-8rem)] shadow-lg">
-            <div className="p-5 border-b border-[#0A0510] flex justify-between items-center bg-[#150A21] rounded-t-xl z-10 sticky top-0">
-              <h2 className="text-xl font-bold text-[#FFD700]">Jogadores Livres</h2>
-              <span className="bg-[#FFD700] text-[#0A0510] px-3 py-1 rounded-full text-sm font-bold shadow-sm">
-                {unassignedPlayers.length} / 22
-              </span>
-            </div>
-            
-            <div className="p-5 overflow-y-auto flex-1 space-y-6">
-              {ROLES.map(role => {
-                const mainPlayers = unassignedPlayers.filter(p => p.main === role);
-                const secPlayers = unassignedPlayers.filter(p => p.sec === role && p.main !== role);
-                
-                if (mainPlayers.length === 0 && secPlayers.length === 0) return null;
-                
-                return (
-                  <div key={`pool-${role}`}>
-                    <h3 className="text-sm font-bold text-[#FFD700] mb-2 flex items-center gap-2">
-                      {role} <span className="bg-[#0A0510] text-purple-300 px-2 py-0.5 rounded-md text-xs border border-[#201030]">{mainPlayers.length + secPlayers.length}</span>
-                    </h3>
-                    <div className="space-y-2">
-                      {/* Renderiza Mains */}
-                      {mainPlayers.map(p => (
-                        <div 
-                          key={`main-${p.id}`} 
-                          draggable
-                          onDragStart={(e) => e.dataTransfer.setData('playerId', p.id.toString())}
-                          className="bg-[#0A0510] border border-[#201030] p-3 rounded-lg hover:border-[#FFD700]/40 transition cursor-grab active:cursor-grabbing group relative overflow-hidden shadow-sm"
-                        >
-                          <div className="font-semibold text-sm text-purple-50 flex items-center gap-2">
-                            <GripVertical className="w-4 h-4 text-purple-700 group-hover:text-[#FFD700] transition-colors shrink-0" />
-                            <span className="truncate" title={p.name}>{formatName(p.name)}</span>
-                          </div>
-                          <div className="text-[10px] text-purple-400 opacity-70 ml-6 -mt-0.5 mb-1 truncate">{p.nick}</div>
-                          <div className="flex justify-between items-center mt-1 pl-6">
-                            <div className="text-xs text-purple-400 flex gap-1">
-                              Sec: <span className={p.sec !== '-' ? 'text-purple-200' : ''}>{p.sec}</span>
-                            </div>
-                            <span className="text-[10px] bg-green-500/10 text-green-400 px-2 py-0.5 rounded border border-green-500/20">
-                              Main
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+            <div className="p-5 border-b border-[#0A0510] bg-[#150A21] rounded-t-xl z-10 sticky top-0 space-y-3">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold text-[#FFD700]">Jogadores Livres</h2>
+                <span className="bg-[#FFD700] text-[#0A0510] px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                  {filteredUnassignedPlayers.length} / 22
+                </span>
+              </div>
 
-                      {/* Renderiza Secundários/Autofills */}
-                      {secPlayers.map(p => (
-                        <div 
-                          key={`sec-${p.id}`} 
-                          draggable
-                          onDragStart={(e) => e.dataTransfer.setData('playerId', p.id.toString())}
-                          className="bg-[#0A0510] border border-dashed border-[#201030] p-3 rounded-lg hover:border-[#FFD700]/40 transition cursor-grab active:cursor-grabbing group relative overflow-hidden opacity-80 hover:opacity-100 shadow-sm"
-                        >
-                          <div className="font-semibold text-sm text-purple-200 flex items-center gap-2">
-                            <GripVertical className="w-4 h-4 text-purple-700 group-hover:text-[#FFD700] transition-colors shrink-0" />
-                            <span className="truncate" title={p.name}>{formatName(p.name)}</span>
-                          </div>
-                          <div className="text-[10px] text-purple-400 opacity-70 ml-6 -mt-0.5 mb-1 truncate">{p.nick}</div>
-                          <div className="flex justify-between items-center mt-1 pl-6">
-                            <div className="text-xs text-purple-400 flex gap-1">
-                              Main: <span className="text-purple-200">{p.main}</span>
+              {/* Search */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-purple-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  value={poolQuery}
+                  onChange={(e) => setPoolQuery(e.target.value)}
+                  placeholder="Buscar por nome ou nick…"
+                  className="w-full bg-[#0A0510] border border-[#201030] rounded-lg pl-9 pr-3 py-2 text-sm text-purple-100
+                             placeholder:text-purple-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/20 focus:border-[#FFD700]/40"
+                />
+              </div>
+
+              {/* Role filter pills */}
+              <div className="flex flex-wrap gap-2">
+                {['ALL', ...ROLES].map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setPoolRole(r)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold border transition
+                      ${poolRole === r
+                        ? 'bg-[#FFD700] text-[#0A0510] border-[#FFD700]'
+                        : 'bg-[#0A0510] text-purple-300 border-[#201030] hover:border-[#FFD700]/40'
+                      }`}
+                  >
+                    {r === 'ALL' ? 'Todos' : r}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-5 overflow-y-auto flex-1 space-y-5">
+              {ROLES.map((role) => {
+                const playersForRole = filteredUnassignedPlayers
+                  .filter(p => p.main === role || p.sec === role)
+                  .sort((a, b) => {
+                    // MAIN primeiro, depois nome
+                    const aMain = a.main === role ? 0 : 1;
+                    const bMain = b.main === role ? 0 : 1;
+                    if (aMain !== bMain) return aMain - bMain;
+                    return a.name.localeCompare(b.name);
+                  });
+
+                if (playersForRole.length === 0) return null;
+
+                const isOpen = expandedRoles[role];
+
+                return (
+                  <div key={`pool-${role}`} className="space-y-2">
+                    <button
+                      onClick={() => setExpandedRoles(prev => ({ ...prev, [role]: !prev[role] }))}
+                      className="w-full flex items-center justify-between text-sm font-bold text-[#FFD700]
+                                 bg-[#0A0510] border border-[#201030] rounded-lg px-3 py-2 hover:border-[#FFD700]/40 transition"
+                    >
+                      <span className="flex items-center gap-2">
+                        {role}
+                        <span className="bg-[#150A21] text-purple-200 px-2 py-0.5 rounded-md text-xs border border-[#201030]">
+                          {playersForRole.length}
+                        </span>
+                      </span>
+                      {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </button>
+
+                    {isOpen && (
+                      <div className="space-y-2">
+                        {playersForRole.map((p) => {
+                          const isMainHere = p.main === role;
+
+                          return (
+                            <div
+                              key={`${role}-${p.id}`}
+                              draggable
+                              onDragStart={(e) => e.dataTransfer.setData('playerId', p.id.toString())}
+                              className={`bg-[#0A0510] border p-3 rounded-lg transition cursor-grab active:cursor-grabbing
+                                hover:border-[#FFD700]/40 shadow-sm group
+                                ${isMainHere ? 'border-[#201030]' : 'border-dashed border-[#201030] opacity-90 hover:opacity-100'}
+                              `}
+                            >
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <GripVertical className="w-4 h-4 text-purple-700 group-hover:text-[#FFD700] transition-colors shrink-0" />
+                                    <span className="font-semibold text-sm text-purple-50 truncate" title={p.name}>
+                                      {formatName(p.name)}
+                                    </span>
+
+                                    <span
+                                      className={`text-[10px] px-2 py-0.5 rounded border
+                                        ${isMainHere
+                                          ? 'bg-green-500/10 text-green-300 border-green-500/20'
+                                          : 'bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/20'
+                                        }`}
+                                    >
+                                      {isMainHere ? 'MAIN' : 'SEC'}
+                                    </span>
+                                  </div>
+
+                                  <div className="text-xs text-purple-400 truncate mt-0.5">
+                                    {p.nick}
+                                  </div>
+                                </div>
+
+                                <div className="shrink-0 text-[10px] text-purple-300 flex flex-col items-end gap-1">
+                                  <span className="bg-[#150A21] border border-[#201030] px-2 py-0.5 rounded">
+                                    Main: <span className="text-purple-100">{p.main}</span>
+                                  </span>
+                                  {p.sec && p.sec !== '-' && (
+                                    <span className="bg-[#150A21] border border-[#201030] px-2 py-0.5 rounded">
+                                      Sec: <span className="text-purple-100">{p.sec}</span>
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                            <span className="text-[10px] bg-[#FFD700]/10 text-[#FFD700] px-2 py-0.5 rounded border border-[#FFD700]/20">
-                              Secundário
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               })}
-              
+
+              {filteredUnassignedPlayers.length === 0 && (
+                <div className="text-center text-purple-400 flex flex-col items-center gap-2 mt-10">
+                  <CheckCircle className="w-12 h-12 text-[#FFD700]/30" />
+                  <p>Nenhum jogador livre com esse filtro.</p>
+                </div>
+              )}
+
               {unassignedPlayers.length === 0 && (
                 <div className="text-center text-purple-400 flex flex-col items-center gap-2 mt-10">
                   <CheckCircle className="w-12 h-12 text-[#FFD700]/30" />
