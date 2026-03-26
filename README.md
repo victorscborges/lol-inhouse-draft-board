@@ -1,3 +1,7 @@
+# LoL Inhouse Draft Board
+
+React + Vite + Tailwind + lucide-react board to organize 22 players into 4 teams + reserves and manage a simple bracket.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
