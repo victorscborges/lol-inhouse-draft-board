@@ -24,7 +24,8 @@ const initialPlayers = [
   { id: 19, name: 'Rodrigo Algamis', nick: 'RodrigoAlgamis#BR1', phone: '13996122000', main: 'SUP', sec: '-', usage: 'Main SUP' },
   { id: 20, name: 'Guilherme de Carvalho Rocha', nick: 'FELIZ NO SIMPLES #gui', phone: '13991923201', main: 'SUP', sec: 'TOP', usage: 'Autofill TOP / Flex SUP' },
   { id: 21, name: 'Renan Garcia', nick: 'nxnzin#001', phone: '13 991520524', main: 'TOP', sec: 'MID', usage: 'Main TOP' },
-  { id: 22, name: 'Luis Gustavo Araujo Santos', nick: 'soulzinhu#2222', phone: '13 99171-3318', main: 'SUP', sec: 'ADC', usage: 'Autofill ADC / Flex SUP' }
+  { id: 22, name: 'Luis Gustavo Araujo Santos', nick: 'soulzinhu#2222', phone: '13 99171-3318', main: 'SUP', sec: 'ADC', usage: 'Autofill ADC / Flex SUP' },
+  { id: 23, name: 'Guilherme Bechelli', nick: 'BKL#1553', phone: '13 99648-3429', main: 'JG', sec: 'SUP', usage: 'Main JG / Flex SUP' }
 ];
 
 const ROLES = ['TOP', 'JG', 'MID', 'ADC', 'SUP'];
@@ -56,7 +57,7 @@ export default function App() {
     'Time 2': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Time 3': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Time 4': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
-    'Reservas': { RES1: null, RES2: null }
+    'Reservas': { RES1: null, RES2: null, RES3: null }
   });
   // ===== UI do Pool (busca/filtro/colapsar) =====
   const [poolQuery, setPoolQuery] = useState('');
@@ -154,7 +155,7 @@ export default function App() {
         'Time 2': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
         'Time 3': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
         'Time 4': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
-        'Reservas': { RES1: null, RES2: null }
+        'Reservas': { RES1: null, RES2: null, RES3: null }
       });
       setWinners({ 1: null, 2: null, 3: null, 4: null, 5: null, 6: null });
       setTeamLabels({ 'Time 1': 'Time 1', 'Time 2': 'Time 2', 'Time 3': 'Time 3', 'Time 4': 'Time 4' });
@@ -252,8 +253,11 @@ export default function App() {
     text += `🛡️ **Reservas**\n`;
     const r1 = getPlayer(draft['Reservas']['RES1']);
     const r2 = getPlayer(draft['Reservas']['RES2']);
+    const r3 = getPlayer(draft['Reservas']['RES3']);
     text += `1. ${r1 ? r1.nick : 'Vazio'}\n`;
     text += `2. ${r2 ? r2.nick : 'Vazio'}\n`;
+    text += `3. ${r3 ? r3.nick : 'Vazio'}\n`;
+
 
     // Fallback for document.execCommand if navigator.clipboard fails in iframe
     const textArea = document.createElement("textarea");
@@ -279,7 +283,7 @@ export default function App() {
             <h1 className="text-3xl font-bold text-[#FFD700] drop-shadow-sm">
               LoL Inhouse Draft Board
             </h1>
-            <p className="text-purple-300 mt-1 text-sm md:text-base">Organize os 22 jogadores em 4 times + 2 reservas</p>
+            <p className="text-purple-300 mt-1 text-sm md:text-base">Organize os 23 jogadores em 4 times + 3 reservas</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 items-center">
             
@@ -318,7 +322,7 @@ export default function App() {
                   <li><strong>Prioridade alta:</strong> Feche antes quem vai jogar <span className="font-semibold text-white">TOP, JG e ADC</span> (lanes escassas).</li>
                   <li><strong>Blocos abundantes:</strong> Deixe <span className="font-semibold text-white">MID e SUP</span> para encaixar depois.</li>
                   <li><strong>Tapar buracos:</strong> Use os nomes com lane secundária para completar as posições carentes.</li>
-                  <li><strong>Excedentes (Reservas):</strong> Defina antes de começar se os 2 jogadores que sobrarem atuarão como reservas gerais ou se serão cortados.</li>
+                  <li><strong>Excedentes (Reservas):</strong> Defina antes de começar se os 3 jogadores que sobrarem atuarão como reservas gerais ou se serão cortados.</li>
                 </ul>
               </div>
             </div>
@@ -396,7 +400,7 @@ export default function App() {
             <div className="bg-[#150A21] rounded-xl border border-[#201030] p-5 shadow-lg">
               <h2 className="text-xl font-bold text-[#FFD700] border-b border-[#0A0510] pb-2 mb-4">Reservas</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {['RES1', 'RES2'].map(resRole => {
+                {['RES1', 'RES2', 'RES3'].map(resRole => {
                   const selectedId = draft['Reservas'][resRole];
                   const selectedPlayer = getPlayer(selectedId);
                   
@@ -447,7 +451,7 @@ export default function App() {
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold text-[#FFD700]">Jogadores Livres</h2>
                 <span className="bg-[#FFD700] text-[#0A0510] px-3 py-1 rounded-full text-sm font-bold shadow-sm">
-                  {filteredUnassignedPlayers.length} / 22
+                  {filteredUnassignedPlayers.length} / {initialPlayers.length}
                 </span>
               </div>
 
