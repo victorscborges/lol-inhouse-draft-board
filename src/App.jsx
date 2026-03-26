@@ -62,8 +62,10 @@ export default function App() {
     'Time 2': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Time 3': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Time 4': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
+    'Time 5': { TOP: null, JG: null, MID: null, ADC: null, SUP: null }, // <-- CORREÇÃO: Faltava isso aqui!
     'Reservas': { RES1: null, RES2: null }
   });
+  
   // ===== UI do Pool (busca/filtro/colapsar) =====
   const [poolQuery, setPoolQuery] = useState('');
   const [poolRole, setPoolRole] = useState('ALL');
@@ -100,7 +102,7 @@ export default function App() {
   }, [unassignedPlayers, poolQuery, poolRole]);
 
   // Função para processar o Drag and Drop
-    const handleAssignPlayer = (targetTeam, targetRole, playerIdStr) => {
+  const handleAssignPlayer = (targetTeam, targetRole, playerIdStr) => {
     const playerId = parseInt(playerIdStr);
     if (!playerId) return;
 
@@ -166,7 +168,7 @@ export default function App() {
   };
 
   const resetDraft = () => {
-    if (confirm("Tem certeza que deseja limpar todo o draft?")) {
+    if (window.confirm("Tem certeza que deseja limpar todo o draft?")) {
       setDraft({
         'Time 1': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
         'Time 2': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
@@ -180,7 +182,7 @@ export default function App() {
     }
   };
 
-    // Logica de Chaveamento / Torneio (5 times - dupla eliminação com play-in)
+  // Logica de Chaveamento / Torneio (5 times - dupla eliminação com play-in)
   const matches = useMemo(() => {
     const m1 = { id: 1, title: 'Jogo 1 (Play-in Superior)', t1: 'Time 4', t2: 'Time 5' };
     const m2 = { id: 2, title: 'Jogo 2 (Semi Superior)', t1: 'Time 2', t2: 'Time 3' };
@@ -208,7 +210,7 @@ export default function App() {
     return { 1: m1, 2: m2, 3: m3, 4: m4, 5: m5, 6: m6, 7: m7, 8: m8 };
   }, [winners]);
 
-    const handleSetWinner = (matchId, teamId) => {
+  const handleSetWinner = (matchId, teamId) => {
     if (!teamId) return;
     setWinners(prev => {
       const next = { ...prev, [matchId]: teamId };
@@ -231,7 +233,6 @@ export default function App() {
       return next;
     });
   };
-
 
   const MatchCard = ({ match }) => {
     const isReady = match.t1 && match.t2;
@@ -288,14 +289,13 @@ export default function App() {
     text += `1. ${r1 ? r1.nick : 'Vazio'}\n`;
     text += `2. ${r2 ? r2.nick : 'Vazio'}\n`;
 
-    // Fallback for document.execCommand if navigator.clipboard fails in iframe
     const textArea = document.createElement("textarea");
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.select();
     try {
       document.execCommand('copy');
-      alert("Times copiados para a área de transferência!");
+      window.alert("Times copiados para a área de transferência!");
     } catch (err) {
       console.error('Falha ao copiar', err);
     }
@@ -625,7 +625,7 @@ export default function App() {
         </>
         )}
 
-                {activeTab === 'bracket' && (
+        {activeTab === 'bracket' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             {/* Upper Bracket */}
             <div>
