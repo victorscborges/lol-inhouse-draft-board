@@ -23,8 +23,8 @@ const initialPlayers = [
   { id: 18, name: 'Felipe Luiz da Silva', nick: 'ChayS#BR1', phone: '13996404897', main: 'SUP', sec: '-', usage: 'Main SUP' },
   { id: 19, name: 'Rodrigo Algamis', nick: 'RodrigoAlgamis#BR1', phone: '13996122000', main: 'SUP', sec: '-', usage: 'Main SUP' },
   { id: 20, name: 'Guilherme de Carvalho Rocha', nick: 'FELIZ NO SIMPLES #gui', phone: '13991923201', main: 'SUP', sec: 'TOP', usage: 'Autofill TOP / Flex SUP' },
-  { id: 21, name: 'Gabriel Casaroti Persico', nick: 'Casaroti#BR1', phone: '13 960009430', main: 'SUP', sec: '-', usage: 'Main SUP' },
-  { id: 22, name: 'Luis Gustavo Araujo Santos', nick: 'soulzinhu#2222', phone: '13 99171-3318', main: 'SUP', sec: 'JG', usage: 'Autofill JG / Flex SUP' }
+  { id: 21, name: 'Renan Garcia', nick: 'nxnzin#001', phone: '13 991520524', main: 'SUP', sec: '-', usage: 'Main SUP' },
+  { id: 22, name: 'Luis Gustavo Araujo Santos', nick: 'soulzinhu#2222', phone: '13 99171-3318', main: 'TOP', sec: 'MID', usage: 'Main TOP' }
 ];
 
 const ROLES = ['TOP', 'JG', 'MID', 'ADC', 'SUP'];
