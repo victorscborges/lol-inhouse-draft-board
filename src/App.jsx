@@ -333,7 +333,7 @@ export default function App() {
             <h1 className="text-3xl font-bold text-[#FFD700] drop-shadow-sm">
               LoL Inhouse Draft Board
             </h1>
-            <p className="text-purple-300 mt-1 text-sm md:text-base">Organize os {initialPlayers.length} jogadores em 5 times + 2 reservas</p>
+            <p className="text-purple-300 mt-1 text-sm md:text-base">Organize os {initialPlayers.length} jogadores em 6 times</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 items-center">
             
