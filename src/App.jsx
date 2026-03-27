@@ -29,11 +29,14 @@ const initialPlayers = [
   { id: 24, name: 'Eduardo Caldas Alves', nick: 'Rita Cake#2pac', phone: '13988161270', main: 'ADC', sec: '-', usage: 'Main ADC' },
   { id: 25, name: 'João Vitor Maia de Oliveira', nick: 'Kryynn #1852', phone: '11963415901', main: 'JG', sec: 'TOP', usage: 'Main JG / Flex TOP' },
   { id: 26, name: 'Matheus Godinho', nick: 'LittIe God#1302', phone: '13991152717', main: 'TOP', sec: 'SUP', usage: 'Main TOP / Flex SUP' },
-  { id: 27, name: 'Gabriel Casaroti Persico', nick: 'Casaroti#BR1', phone: '13 960009430', main: 'SUP', sec: '-', usage: 'Main SUP' }
+  { id: 27, name: 'Gabriel Casaroti Persico', nick: 'Casaroti#BR1', phone: '13 960009430', main: 'SUP', sec: '-', usage: 'Main SUP' },
+  { id: 28, name: 'Igor Aparecido Couto Silva', nick: 'IRN kazuya#otaku', phone: '11 96449-7638', main: 'SUP', sec: 'MID', usage: 'Main SUP / Flex MID' },
+  { id: 29, name: 'Lucas Croce', nick: 'APENAS RISADINHA#HAHA', phone: '-', main: 'TOP', sec: 'MID', usage: 'Main TOP / Flex MID' },
+  { id: 30, name: 'Espaço Reservado', nick: 'Espaço Reservado#BR1', phone: '-', main: 'SUP', sec: 'ADC', usage: 'Main SUP / Flex ADC' }
 ];
 
 const ROLES = ['TOP', 'JG', 'MID', 'ADC', 'SUP'];
-const TEAMS = ['Time 1', 'Time 2', 'Time 3', 'Time 4', 'Time 5'];
+const TEAMS = ['Time 1', 'Time 2', 'Time 3', 'Time 4', 'Time 5', 'Time 6'];
 
 // Helper para pegar Primeiro e Último nome
 const formatName = (fullName) => {
@@ -46,7 +49,7 @@ const formatName = (fullName) => {
 export default function App() {
   const [activeTab, setActiveTab] = useState('draft');
   const [winners, setWinners] = useState({
-    1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null
+    1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null
   });
 
   const [teamLabels, setTeamLabels] = useState({
@@ -54,7 +57,8 @@ export default function App() {
     'Time 2': 'Time 2',
     'Time 3': 'Time 3',
     'Time 4': 'Time 4',
-    'Time 5': 'Time 5'
+    'Time 5': 'Time 5',
+    'Time 6': 'Time 6'
   });
 
   const [draft, setDraft] = useState({
@@ -62,7 +66,8 @@ export default function App() {
     'Time 2': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Time 3': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Time 4': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
-    'Time 5': { TOP: null, JG: null, MID: null, ADC: null, SUP: null }, // <-- CORREÇÃO: Faltava isso aqui!
+    'Time 5': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
+    'Time 6': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
     'Reservas': { RES1: null, RES2: null }
   });
   
@@ -175,17 +180,18 @@ export default function App() {
         'Time 3': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
         'Time 4': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
         'Time 5': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
+        'Time 6': { TOP: null, JG: null, MID: null, ADC: null, SUP: null },
         'Reservas': { RES1: null, RES2: null }
       });
-      setWinners({ 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null });
-      setTeamLabels({ 'Time 1': 'Time 1', 'Time 2': 'Time 2', 'Time 3': 'Time 3', 'Time 4': 'Time 4', 'Time 5': 'Time 5' });
+      setWinners({ 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null });
+      setTeamLabels({ 'Time 1': 'Time 1', 'Time 2': 'Time 2', 'Time 3': 'Time 3', 'Time 4': 'Time 4', 'Time 5': 'Time 5', 'Time 6': 'Time 6' });
     }
   };
 
-  // Logica de Chaveamento / Torneio (5 times - dupla eliminação com play-in)
+  // Logica de Chaveamento / Torneio (6 times - dupla eliminação com play-in)
   const matches = useMemo(() => {
-    const m1 = { id: 1, title: 'Jogo 1 (Play-in Superior)', t1: 'Time 4', t2: 'Time 5' };
-    const m2 = { id: 2, title: 'Jogo 2 (Semi Superior)', t1: 'Time 2', t2: 'Time 3' };
+    const m1 = { id: 1, title: 'Jogo 1 (Play-in Superior)', t1: 'Time 3', t2: 'Time 6' };
+    const m2 = { id: 2, title: 'Jogo 2 (Play-in Superior)', t1: 'Time 4', t2: 'Time 5' };
 
     const m1Winner = winners[1];
     const m2Winner = winners[2];
@@ -193,21 +199,34 @@ export default function App() {
     const m1Loser = m1Winner ? (m1Winner === m1.t1 ? m1.t2 : m1.t1) : null;
     const m2Loser = m2Winner ? (m2Winner === m2.t1 ? m2.t2 : m2.t1) : null;
 
-    const m3 = { id: 3, title: 'Jogo 3 (Semi Superior)', t1: 'Time 1', t2: m1Winner };
-    const m3Winner = winners[3];
-    const m3Loser = (m3Winner && m3.t1 && m3.t2) ? (m3Winner === m3.t1 ? m3.t2 : m3.t1) : null;
+    const m3 = { id: 3, title: 'Jogo 3 (Semi Superior)', t1: 'Time 1', t2: m2Winner };
+    const m4 = { id: 4, title: 'Jogo 4 (Semi Superior)', t1: 'Time 2', t2: m1Winner };
 
-    const m4 = { id: 4, title: 'Jogo 4 (Final Superior)', t1: m2Winner, t2: m3Winner };
+    const m3Winner = winners[3];
     const m4Winner = winners[4];
+    
+    const m3Loser = (m3Winner && m3.t1 && m3.t2) ? (m3Winner === m3.t1 ? m3.t2 : m3.t1) : null;
     const m4Loser = (m4Winner && m4.t1 && m4.t2) ? (m4Winner === m4.t1 ? m4.t2 : m4.t1) : null;
 
-    const m5 = { id: 5, title: 'Jogo 5 (Inferior R1 - Eliminação)', t1: m1Loser, t2: m2Loser };
-    const m6 = { id: 6, title: 'Jogo 6 (Inferior R2 - Eliminação)', t1: winners[5], t2: m3Loser };
-    const m7 = { id: 7, title: 'Jogo 7 (Inferior Final - Eliminação)', t1: winners[6], t2: m4Loser };
+    const m5 = { id: 5, title: 'Jogo 5 (Inferior R1)', t1: m1Loser, t2: m4Loser };
+    const m6 = { id: 6, title: 'Jogo 6 (Inferior R1)', t1: m2Loser, t2: m3Loser };
 
-    const m8 = { id: 8, title: 'Jogo 8 (GRANDE FINAL)', t1: m4Winner, t2: winners[7] };
+    const m5Winner = winners[5];
+    const m6Winner = winners[6];
 
-    return { 1: m1, 2: m2, 3: m3, 4: m4, 5: m5, 6: m6, 7: m7, 8: m8 };
+    const m7 = { id: 7, title: 'Jogo 7 (Final Superior)', t1: m3Winner, t2: m4Winner };
+    const m7Winner = winners[7];
+    const m7Loser = (m7Winner && m7.t1 && m7.t2) ? (m7Winner === m7.t1 ? m7.t2 : m7.t1) : null;
+
+    const m8 = { id: 8, title: 'Jogo 8 (Inferior Semifinal)', t1: m5Winner, t2: m6Winner };
+    const m8Winner = winners[8];
+
+    const m9 = { id: 9, title: 'Jogo 9 (Final Inferior)', t1: m8Winner, t2: m7Loser };
+    const m9Winner = winners[9];
+
+    const m10 = { id: 10, title: 'GRANDE FINAL', t1: m7Winner, t2: m9Winner };
+
+    return { 1: m1, 2: m2, 3: m3, 4: m4, 5: m5, 6: m6, 7: m7, 8: m8, 9: m9, 10: m10 };
   }, [winners]);
 
   const handleSetWinner = (matchId, teamId) => {
@@ -215,15 +234,17 @@ export default function App() {
     setWinners(prev => {
       const next = { ...prev, [matchId]: teamId };
 
-      // Reseta jogos subsequentes (dependências do bracket de 5 times)
+      // Reseta jogos subsequentes (dependências do bracket de 6 times)
       const resetAfter = {
-        1: [3, 4, 5, 6, 7, 8],
-        2: [4, 5, 6, 7, 8],
-        3: [4, 6, 7, 8],
-        4: [7, 8],
-        5: [6, 7, 8],
-        6: [7, 8],
-        7: [8]
+        1: [4, 5, 7, 8, 9, 10],
+        2: [3, 6, 7, 8, 9, 10],
+        3: [6, 7, 9, 10],
+        4: [5, 7, 9, 10],
+        5: [8, 9, 10],
+        6: [8, 9, 10],
+        7: [9, 10],
+        8: [9, 10],
+        9: [10]
       };
 
       (resetAfter[matchId] || []).forEach(id => {
@@ -634,15 +655,20 @@ export default function App() {
                 <h2 className="text-2xl font-bold text-[#FFD700]">Chave Superior (Upper Bracket)</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <MatchCard match={matches[1]} />
                 <MatchCard match={matches[2]} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <MatchCard match={matches[3]} />
                 <MatchCard match={matches[4]} />
               </div>
+              <div className="max-w-md mx-auto">
+                <MatchCard match={matches[7]} />
+              </div>
 
               <p className="mt-3 text-xs text-purple-400">
-                * Com 5 times, usamos um <span className="text-purple-200 font-semibold">play-in</span> (Jogo 1) e o <span className="text-purple-200 font-semibold">Time 1</span> entra com bye na semi (Jogo 3).
+                * Com 6 times, usamos dois jogos de <span className="text-purple-200 font-semibold">play-in</span>. Os times 1 e 2 entram direto nas semifinais superiores.
               </p>
             </div>
 
@@ -653,10 +679,13 @@ export default function App() {
                 <h2 className="text-2xl font-bold text-[#FFD700]">Chave Inferior (Lower Bracket)</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <MatchCard match={matches[5]} />
                 <MatchCard match={matches[6]} />
-                <MatchCard match={matches[7]} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <MatchCard match={matches[8]} />
+                <MatchCard match={matches[9]} />
               </div>
             </div>
 
@@ -668,14 +697,14 @@ export default function App() {
               </div>
 
               <div className="max-w-md mx-auto space-y-6">
-                <MatchCard match={matches[8]} />
+                <MatchCard match={matches[10]} />
 
-                {winners[8] && (
+                {winners[10] && (
                   <div className="p-6 bg-gradient-to-br from-[#150A21] to-[#0A0510] border border-[#FFD700]/30 rounded-2xl text-center shadow-[0_0_30px_rgba(250,204,21,0.1)]">
                     <Trophy className="w-16 h-16 text-[#FFD700] mx-auto mb-4 drop-shadow-[0_0_15px_rgba(250,204,21,0.4)]" />
                     <h3 className="text-xl text-purple-200 font-medium">CAMPEÃO DO INHOUSE</h3>
                     <div className="text-4xl font-black text-[#FFD700] mt-2 drop-shadow-md">
-                      {teamLabels[winners[8]]}
+                      {teamLabels[winners[10]]}
                     </div>
                   </div>
                 )}
